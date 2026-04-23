@@ -1,0 +1,40 @@
+services:
+  mqtt:
+    build: ./mqtt_server
+    ports:
+      - "1883:1883"   # raw MQTT
+      - "9001:9001"   # MQTT over WebSockets (used by the browser)
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      # Hostname the API uses to reach the MQTT broker.
+      # Switch between local mqtt and Raspberry Pi:
+      MQTT_SERVER: mqtt
+      # MQTT_SERVER: 192.168.0.220
+      # Comma-separated hex IDs of real devices to pre-load:
+      REAL_GUNS: "0x0090adbc,0x0097e5a0,0x0048e594,0x0097c790,0x004850a8,0x0097a50c,0x00490c74,0x00835258,0x0030de54,0x0010ed88"
+      REAL_MODULES: "0x008de4a4,0x0096bad0,0x008e1620,0x0097e770,0x004868cc,0x004856c4,0x00988fec,0x009992ec,0x006bb170,0x0090ad24,0x004806e8,0x00986270,0x0097aaec,0x003a4054,0x0096c408,0x0097d1bc"
+    restart: unless-stopped
+    depends_on:
+      - mqtt
+
+  simulator:
+    build: ./simulator
+    ports:
+      - "8080:80"
+    environment:
+      # URL the BROWSER uses to reach the MQTT broker.
+      # Switch between local mqtt and Raspberry Pi:
+      # MQTT_URL: ws://localhost:9001
+      MQTT_URL: ws://192.168.0.220:9001
+      # Comma-separated hex IDs of real devices to pre-load in the simulator:
+      REAL_GUNS: "0x0090adbc,0x0097e5a0,0x0048e594,0x0097c790,0x004850a8,0x0097a50c,0x00490c74,0x00835258,0x0030de54,0x0010ed88"
+      REAL_MODULES: "0x008de4a4,0x0096bad0,0x008e1620,0x0097e770,0x004868cc,0x004856c4,0x00988fec,0x009992ec,0x006bb170,0x0090ad24,0x004806e8,0x00986270,0x0097aaec,0x003a4054,0x0096c408,0x0097d1bc"
+    restart: unless-stopped
+    depends_on:
+      - mqtt
+  
