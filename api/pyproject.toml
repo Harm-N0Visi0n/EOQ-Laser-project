@@ -1,0 +1,24 @@
+[project]
+name = "colat-api"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi (>=0.135.3,<0.136.0)",
+    "fastapi-cli (>=0.0.24,<0.0.25)",
+    "fastapi-offline (>=1.7.6,<2.0.0)",
+    "paho-mqtt (>=2.1.0,<3.0.0)",
+    "websockets (>=16.0,<17.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+package-mode = false
